@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>多元统计分析R语言应用——主成分分析</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+</head>
+
+<body>
+<p>souce(&ldquo;源文件&rdquo;,echo=TRUE,encoding=&ldquo;utf-8&rdquo;)</p>
+
+<h1>多元统计分析R语言应用——主成分分析</h1>
+
+<p>主成分分析是将多指标化为少数几个综合指标的统计分析方法。方法是降维。数学上的处理就是对原来的p个指标作线性组合，作为新的指标。</p>
+
+<h2>主成分分析的步骤</h2>
+
+<h3>计算步骤</h3>
+
+<ol>
+<li>设有n个样品，p个指标，将原始数据标准化，得标准化数据矩阵：<br/>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM8AAABjCAMAAAALgaT4AAAAOVBMVEX///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXHtMAAAAEnRSTlMAHn5evy4O706P324+z5+vSjqm3h57AAAE+klEQVR4Ae1bi7KrIAyktVqr1J7r/3/sDY/wUAQUtNWBmSNRl4WV4LExErKu3O68rGt0BFqM67a2Kzo+WFnbbH88H9ZI13ZEx7UtjsQXPWV+ir9tvwJl/Vx3/dS0b+Av7BzRwDAVR3j4EvytrQntaDsG/yNHAyPl+PgS9NwJqTrS1MFRRALrh6RCA+tpBz6+BD3QzTDwvmj/gVpsp52LfQvY98PQzHH9KF0XDaznULtj83yanq7iXLRlj3Nia5Jr2wRW0Oj10ueUpR690MBaIZRh8qmDzEjSc2NrpwUWyh9PxdailzsWsAV/4RfAhYw7ZvGRuiEU53u7nvZJKng0hcUZ0DMHgqOyq7CxTPkofVIiHD9lfuqBtn1LuU9452cOJMzlNpcpH711hDykb26fH3M8Xj1zYNuS4E3ebLVs844rmJxOEn5DD3NR1/1gediLZ7ieoSIU+bLoqYbufiNiu9g1O8Eh7QgF7gkZiuiyq1rlv1n0ZBhZAgVbPqqcX09zfxiL8QJ6KL2UHuVq3Dj//BQ99hW47u9TW+dv7JX1U/ztSE9M8TdPmMWWEA20my3uefjW6/nD9wu+MIs1lGig1Wp5x8c3/i23c59RenxhFqtpJFCFc9DA2iKDHR/fej3m/UCGbUTAJiK+I4D54jtzpvX+ZuoRYRYZsAnHdwQwX3zHwZSkR4ZZMGAjfnVPvYPtW0CEu4CRxyy+HeI7ImCzoMeMx2BkJ1d8h/HtEN8RAZsFPWY8RkZ2mKNsLlO+HeI7ImCzoMccuADmi+9wpuzxHRmwCesRQAk3dW60BdM8vsNzJOBXawU5CcaPV2cv5v1NAGTAJhzfEcB88R3J5IrvPEYWt22eYcee63HKPu6gM77TjkzJS76B8Q1GPR/4QAeem8R38HmngyhWFSGH/JweO76DevqRstUVLj/nb9aQ1fNBM77j3mGcRA8ZRnwnJAR/eL4S32Cwm584iZ76jq8vrfmb75xDT92TtxnXnuvAI6fQcwOXqkZrAdVUFes+cQY9DXtT3jzZW3dVRPoi31r/ZE+gpxELfgineoDan9dDh2fH3qZW7/ET8drs5/UoD4szfu35wB71+niIQ0/9sf912V3ovQNw6/U4/K19hn5kCE0H4NTzjr6KAcuhJ9DiyNNFT5mf0/nbAfct5zVx9Jtl/Rxw33LqcfSbRY+zs+8cLHqudn/79/6OJ8X1+v4Xh9Mox/w47jMab1gH4LKsH8d9xlChzQNwWfToEX/dKnoc6+frs6IHUOanzI/2hv2t4m/F3/b3Mt1D8bfib9ob9reKv13X3zxpnJZjxeKsRp4dH1+Cv8Hr/ajvg2NxHgXWKS9fgh5fGqc5gFicShdFA2uTDGwvX4IeoJb5o9jhYgbpBDdP+2QM6nNgNLBGel1P+PSJtO9pifxMF/kWM0htnCPtkzOoz4HRwBr5VW3zqcNgJM0PfqYLH+jW/B34QgbcBJecQDrhMxNIt+vRaaGQwFk1L3YxXXpcOEwjNa9srD3nMxNIt+vRaZw8gROSBN16XLiUD4TnfGYC6XY9xvVUCZyu+XHhMiWQYr9YQ1dZ9MDctJ8bZJcE9CCOJaZZOU6G5jUm8kGNHwhn0QMfgNIXyAllkEpctgRS7NdIIM2iZ8013QFrJpBeQI+VQHoFPWYC6RY9PI9sB79JpOTD2qKHfe+PH2kljiFncz6skf4HctQ8jbsDvlMAAAAASUVORK5CYII=" alt="矩阵"/></li>
+<li>建立变量的相关系数阵：\( R = (r_{ij})_{p\times p} = X'X \)。</li>
+<li>求R的特征值\( \lambda_1 \geqslant \lambda_2 \geqslant \cdots > 0 \)及相应的单位特征向量：<br/>
+<img src="data:image/png;base64,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" alt="矩阵"/></li>
+<li>写出主成分：\( y_i = u_{i1}x_1 + u_{i2}x_2 + \cdots  + u_{ip}x_p \)</li>
+</ol>
+
+<h4>R语言计算函数</h4>
+
+<pre><code class="text">主成分分析函数
+princomp(x, cor = FLASE, scores = TRUE, ...)
+x为数据矩阵或数据框
+cor为是否用相关矩阵，默认为协差阵
+scores为是否输出成分得分
+
+碎石图函数
+screeplot(obj, type = c(&quot;barolot&quot;,&quot;lines&quot;, ...))
+obj为主成分分析对象
+type为图形类型
+</code></pre>
+
+<h2>例题</h2>
+
+<p>对我国31个省、市、自治区的人均消费水平作分析评价，并根据因子得分和综合得分对各省市自治区的人均消费水平进行综合分析。</p>
+
+<pre><code class="r">X = read.table(&quot;d7.2.txt&quot;, header = T)  #导入数据
+X  #显示数据
+</code></pre>
+
+<pre><code>##          X1     X2    X3    X4     X5     X6     X7    X8
+## 北京   3229  821.7 847.4 677.7  768.3 1429.2  588.0 561.2
+## 天津   2588  532.0 806.4 435.4  585.9  897.0  808.0 334.4
+## 河北   1584  530.0 399.0 420.1  390.2  498.1  461.2 197.4
+## 山西   1413  518.1 317.0 347.5  317.8  567.9  391.1 250.7
+## 内蒙古 1423  594.7 292.4 268.9  390.2  548.2  403.7 274.3
+## 辽宁   1846  592.0 272.8 378.3  347.5  575.1  412.1 230.6
+## 吉林   1651  547.0 257.7 325.4  345.0  528.6  453.9 228.7
+## 黑龙江 1561  532.0 259.6 353.5  318.3  534.2  432.1 201.6
+## 上海   4022  577.4 642.1 558.0  875.4 1359.8  732.4 569.4
+## 江苏   2194  525.9 603.4 297.5  483.8  691.5  438.2 298.6
+## 浙江   2888  669.0 926.7 532.7  689.0 1065.1  724.5 457.1
+## 安徽   1999  466.6 327.4 205.1  333.4  585.4  407.1 193.7
+## 福建   2651  506.9 488.4 283.2  559.7  599.0  639.8 287.0
+## 江西   1588  353.4 292.1 150.0  310.9  488.2  527.2 185.1
+## 山东   1801  700.3 522.4 327.5  411.3  777.8  441.5 270.4
+## 河南   1425  484.2 333.2 298.7  299.9  427.9  650.2 191.1
+## 湖北   1799  582.7 347.8 241.9  336.2  698.9  586.3 211.6
+## 湖南   1944  551.5 460.1 328.6  474.7  826.9  662.4 298.4
+## 广东   3090  383.0 556.1 392.4 1075.3  961.8 1126.7 514.6
+## 广西   1968  363.2 480.7 253.2  457.2  704.6  740.1 257.7
+## 海南   2022  208.8 282.5 243.8  349.4  525.9  460.1 275.1
+## 重庆   2338  589.3 509.8 334.1  442.5  850.1  563.7 246.5
+## 四川   2082  489.8 460.6 300.3  381.5  674.8  530.2 256.9
+## 贵州   1749  486.2 361.9 249.4  371.7  522.7  333.7 199.4
+## 云南   2106  535.4 306.7 369.6  467.6  595.9  508.8 362.8
+## 西藏   2627 1001.5 258.2 220.1  628.4  495.0  369.1 395.1
+## 陕西   1589  443.7 529.7 361.2  366.3  642.5  452.7 252.2
+## 甘肃   1639  537.9 367.3 361.4  320.9  592.7  322.9 277.9
+## 青海   1790  532.5 350.9 374.4  361.9  594.0  295.5 399.1
+## 宁夏   1563  572.0 469.2 410.0  437.7  542.4  323.2 278.4
+## 新疆   1717  690.1 440.4 302.8  406.7  626.6  474.6 273.4
+</code></pre>
+
+<pre><code class="r">cor(X)  #计算相关矩阵
+</code></pre>
+
+<pre><code>##        X1      X2     X3     X4     X5     X6      X7     X8
+## X1 1.0000  0.2594 0.6552 0.5662 0.8866 0.8309  0.6020 0.8493
+## X2 0.2594  1.0000 0.2139 0.3359 0.2386 0.2753 -0.1967 0.3551
+## X3 0.6552  0.2139 1.0000 0.7024 0.6347 0.8148  0.5347 0.6191
+## X4 0.5662  0.3359 0.7024 1.0000 0.5660 0.7689  0.2813 0.7111
+## X5 0.8866  0.2386 0.6347 0.5660 1.0000 0.7591  0.7204 0.8770
+## X6 0.8309  0.2753 0.8148 0.7689 0.7591 1.0000  0.5623 0.8045
+## X7 0.6020 -0.1967 0.5347 0.2813 0.7204 0.5623  1.0000 0.4655
+## X8 0.8493  0.3551 0.6191 0.7111 0.8770 0.8045  0.4655 1.0000
+</code></pre>
+
+<pre><code class="r">PCA = princomp(X, cor = T)  #主成分分析
+PCA  #特征值
+</code></pre>
+
+<pre><code>## Call:
+## princomp(x = X, cor = T)
+## 
+## Standard deviations:
+## Comp.1 Comp.2 Comp.3 Comp.4 Comp.5 Comp.6 Comp.7 Comp.8 
+## 2.2787 1.1228 0.8044 0.6231 0.4844 0.3824 0.2965 0.2068 
+## 
+##  8  variables and  31 observations.
+</code></pre>
+
+<pre><code class="r">summary(PCA, loadings = T)  #主成分结果
+</code></pre>
+
+<pre><code>## Importance of components:
+##                        Comp.1 Comp.2  Comp.3  Comp.4  Comp.5  Comp.6
+## Standard deviation     2.2787 1.1228 0.80441 0.62313 0.48439 0.38236
+## Proportion of Variance 0.6491 0.1576 0.08088 0.04854 0.02933 0.01827
+## Cumulative Proportion  0.6491 0.8066 0.88752 0.93606 0.96539 0.98366
+##                         Comp.7   Comp.8
+## Standard deviation     0.29649 0.206837
+## Proportion of Variance 0.01099 0.005348
+## Cumulative Proportion  0.99465 1.000000
+## 
+## Loadings:
+##    Comp.1 Comp.2 Comp.3 Comp.4 Comp.5 Comp.6 Comp.7 Comp.8
+## X1 -0.400         0.301  0.133  0.492 -0.215  0.604 -0.274
+## X2 -0.141  0.752  0.358 -0.488 -0.183 -0.103              
+## X3 -0.363        -0.492 -0.492  0.321  0.526              
+## X4 -0.342  0.262 -0.535  0.328 -0.521 -0.116  0.367       
+## X5 -0.401 -0.135  0.377        -0.181  0.344  0.110  0.714
+## X6 -0.410        -0.211         0.286 -0.618 -0.463  0.329
+## X7 -0.288 -0.576  0.140 -0.427 -0.485 -0.222        -0.310
+## X8 -0.399  0.107  0.215  0.455         0.322 -0.521 -0.447
+</code></pre>
+
+<pre><code class="r"># Standard deviation 主成分标准差，即主成分的方差平方根，相应特征值的开方。
+
+# Proportion of Variance 方差贡献率
+
+# Cumulative Proportion 方差累计贡献率
+
+# 按照累计方差贡献率大于80%的原则，选定两个主成分，其累计方差哈贡献率为80.7%，
+# 本例取 m = 2。从碎石图上面也可以看出m取2比较合适。
+screeplot(PCA, type = &quot;lines&quot;)  #确定主成分
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAeFBMVEX9/v0AAAAAADkAAGUAOTkAOY8AZrU5AAA5ADk5AGU5OY85ZrU5j9plAABlADllAGVlZjllZmVltf2POQCPOTmPOWWPjzmPj2WPtY+P29qP2/21ZgC124+1/rW1/v3ajzna24/a/rXa/v39tWX924/9/rX9/tr9/v3+0a69AAAAKHRSTlP///////////////////////////////////////////////////8AvqouGAAAAAlwSFlzAAALEgAACxIB0t1+/AAACyxJREFUeJzt3Qtb4kgahuEpe5XpXtBd6dmZhRnZFUL+/z+cBEhEQXOgDl/lfZ6rp9vpNga9U1WBCP5SkmS/pL4BlCbgRQNeNOBFA1404EUDXjTgRQNeNOBFA1404EUDXjTgRQNeNOBFA1404EUDXjTgRQNeNOBFA1404EUDXjRp+GLh6p6bN+f1X+6X7iHx7YoR8M7drcrt4Y2D+G7mvr2kvmXhE4e/fy3LtZtXo7wa7Zv6EKh+//dhDph4wNfwu1n9xn75XP/27c+ZwFwvDn+a6rfH5b1uN3uo7Kc/1wN/XOJb+E01z28E5npx+HqGL+th3kz11WrfnOVNO+CPbzQnd9U5fd3053rgD7V35zaHSX89/bke+ObNwwM41Uxfk2+mP9dLwysHvGjAiwa8aMCLBrxowIsGvGjAiwa8aMCLBrxowIsGvGjAiwa8aMCLBrxowIsGvGjAiwa8aMCLBrxowIsGvGjAiwa8aMCLBrxowIsGvGjAiwa8aP7gnXPePhYFzxu8O/1HeQS8aMCLxhovGmf1ogEvGvCiAS+aT3hO7jIKeNGAF83rGo98PnXCF08vhxdzb1/Z/YuAz6c+8LV9uftn9wcDPp/6wO9+vB5H/inX9PF9gc+nbvjF3X9/q0f8j4u5HviM63Fyd/gpu9srP5fp0hn5bLrlrB74jANeNOBF8wuPfDYBLxrwogEvGvCieYZHPpeAFw140YAXDXjRfMMjn0nAiwa8aMCLBrxo3uGRzyPgRQNeNOBFA140//DIZxHwogEvGvCiBYBHPoeAFw140YAXDXjRQsAjn0HAiwa8aMCLBrxoQeCRtx/wogEvGvCiAS9aGHjkzQe8aMCLBrxowIsWCB556wEvGvCiAS9a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" alt="plot of chunk unnamed-chunk-1"/> </p>
+
+<pre><code class="r">PCA$scores  #主成分得分
+</code></pre>
+
+<pre><code>##         Comp.1   Comp.2    Comp.3   Comp.4     Comp.5   Comp.6    Comp.7
+## 北京   -6.0882  2.09606 -0.967785  0.25777 -0.0005352 -0.37264 -0.259314
+## 天津   -2.6532 -0.89692 -0.891557 -1.07712 -0.0244271  0.27253  0.270831
+## 河北    1.1621  0.30059 -0.784505  0.02194 -0.7896821  0.09837  0.650194
+## 山西    1.6500  0.43010 -0.460958  0.40646 -0.3690874 -0.07021 -0.204588
+## 内蒙古  1.6314  0.57609  0.441232  0.06716 -0.2598856  0.12973 -0.510230
+## 辽宁    1.2429  0.75205 -0.051753  0.33519 -0.4212834 -0.49894  0.430659
+## 吉林    1.6459  0.25355  0.112123  0.21903 -0.4579876 -0.32579  0.139151
+## 黑龙江  1.8163  0.31636 -0.254968  0.25832 -0.5430371 -0.42992  0.261995
+## 上海   -5.9388 -0.16127  0.413065  1.23264  0.5779565 -0.73834  0.239540
+## 江苏   -0.1683  0.03012 -0.233424 -0.26671  0.8701181  0.65679  0.021192
+## 浙江   -4.4178  0.39587 -0.969755 -0.75821  0.0758300  0.56848  0.052118
+## 安徽    1.8800 -0.38730  0.304360 -0.03961  0.8785949 -0.26598  0.146906
+## 福建   -0.4666 -0.90174  0.729826 -0.32745  0.3734576  0.26880  0.652549
+## 江西    2.5741 -1.49545  0.305732 -0.13992  0.4700609 -0.05082 -0.269775
+## 山东    0.1042  1.12235 -0.187444 -0.81021  0.1991290 -0.07043 -0.353062
+## 河南    1.8817 -0.80439 -0.167097 -0.56844 -0.9028320 -0.13039  0.125025
+## 湖北    1.1609 -0.21344  0.346802 -0.80620  0.0452773 -0.72569 -0.295123
+## 湖南   -0.4165 -0.44373 -0.001396 -0.47341 -0.2432148 -0.40431 -0.467659
+## 广东   -4.6097 -3.09210  1.517087  0.33543 -1.0428558  0.41621 -0.203544
+## 广西    0.2393 -1.95811 -0.100414 -0.46736  0.1007335 -0.06618 -0.285897
+## 海南    1.7619 -1.80161 -0.120225  1.35764  0.6997838  0.10853  0.017023
+## 重庆   -0.4426  0.03294 -0.152222 -0.64286  0.4487145 -0.58529  0.171194
+## 四川    0.5004 -0.41276 -0.203583 -0.19935  0.3867867 -0.11602  0.065306
+## 贵州    1.9329  0.06752 -0.003315  0.10135  0.5829379  0.21588  0.190903
+## 云南    0.1084  0.11915  0.467213  0.85614 -0.4402763  0.02641  0.005889
+## 西藏   -0.2021  2.59081  3.214746 -0.43987  0.1134174  0.36791  0.166188
+## 陕西    0.7690 -0.20240 -1.151012  0.01362  0.0680352  0.37792 -0.111389
+## 甘肃    1.2875  0.80113 -0.525399  0.57332  0.0233450  0.08444 -0.091012
+## 青海    0.6707  0.97433 -0.168785  1.32837  0.0563299  0.45637 -0.471031
+## 宁夏    0.7538  1.01381 -0.718172  0.34970 -0.3157299  0.70287  0.172564
+## 新疆    0.6300  0.89838  0.261583 -0.69735 -0.1596742  0.09972 -0.256603
+##           Comp.8
+## 北京    0.101898
+## 天津   -0.278032
+## 河北    0.212926
+## 山西    0.050285
+## 内蒙古  0.174135
+## 辽宁    0.003292
+## 吉林   -0.007333
+## 黑龙江  0.089929
+## 上海    0.019024
+## 江苏    0.137926
+## 浙江   -0.286140
+## 安徽    0.144447
+## 福建   -0.146259
+## 江西    0.013447
+## 山东    0.196001
+## 河南   -0.408239
+## 湖北   -0.070358
+## 湖南    0.040374
+## 广东    0.394551
+## 广西   -0.068352
+## 海南   -0.187016
+## 重庆    0.123428
+## 四川   -0.156011
+## 贵州    0.396357
+## 云南   -0.326524
+## 西藏   -0.133106
+## 陕西    0.102067
+## 甘肃   -0.034341
+## 青海   -0.401834
+## 宁夏    0.326958
+## 新疆   -0.023500
+</code></pre>
+
+<p>结果：</p>
+
+<p>第一主成分为Y1 = -0.400X1 - 0.141X2 - 0.363X3 - 0.342X4 - 0.401X5 - 0.410X6 - 0.288X7 - 0.399X8</p>
+
+<p>第二主成分为Y2 = 0.752X2 + 0.262X4 - 0.135X5 - 0.576X7 + 0.107X8</p>
+
+<p>综合得分： \( Y = (0.649 \times Y_1 + 0.518 \times Y_2)/(0.649 + 0.518) \)</p>
+
+</body>
+
+</html>
+

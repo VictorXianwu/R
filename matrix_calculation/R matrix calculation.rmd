@@ -1,0 +1,152 @@
+R矩阵运算
+=========
+
+用过Matlab的同学转用R会觉得R的矩阵运算真的有点蛋疼，但是学了统计，一直不用R也不是回事，所以索性放下Matlab，了解并使用一下R的矩阵运算。
+
+创建一个向量
+------------
+
+```{r}
+x = c(1:12)
+x
+```
+
+创建一个矩阵
+------------
+
+R中的矩阵输入是内容和格式分开的，不像matlab直接可以输入，需要把向量变为矩阵。
+
+```{r}
+A = matrix(x,nrow=3,ncol=4,byrow=T,dimnames=NULL) #注意R中输入的矩阵默认是先排列，后排行，与matlab不同。
+A
+args(matrix)
+```
+
+data 项为必要的矩阵元素，nrow 为行数，ncol 为列数，注意 nrow 与 ncol 的乘积应为矩阵元素个数，byrow 项控制排列元素时是否按行进行，dimnames 给定行和列的名称。
+
+矩阵转置
+--------
+
+```{r}
+t(A)
+```
+
+矩阵加减和数乘
+--------------
+
+使用“+”、“-”、“*”，如：
+
+```{r}
+A=B=matrix(1:12,nrow=3,ncol=4)
+A+B
+A-B
+2*A
+```
+
+矩阵乘法
+--------
+
+使用“％*％”
+
+```{r}
+A=matrix(1:12,nrow=3,ncol=4)
+B=matrix(1:12,nrow=4,ncol=3) 
+A%*%B #真不知道怎么发明的这个符号……
+A=B=matrix(1:12,nrow=4,ncol=3) 
+crossprod(A,B) #得到A'B，效率更高
+```
+
+矩阵对角元素相关运算
+--------------------
+
+```{r}
+A=matrix(1:16,nrow=4,ncol=4)
+diag(A) #对一个矩阵应用diag()函数将产生主对角线向量
+diag(diag(A)) #对一个向量应用 diag()函数将产生以这个向量为对角元素的对角矩阵
+diag(3) #对一个正整数 z 应用 diag()函数将产生以 z 维单位矩阵
+```
+
+矩阵求逆
+--------
+
+矩阵求逆可用函数 solve()，应用 solve(a, b)运算结果是解线性方程组 ax  =  b，若 b 缺省，则系统默认为单位矩阵，因此可用其进行矩阵求逆。
+
+```{r}
+a=matrix(rnorm(16),4,4)
+a
+solve(a)
+```
+
+矩阵的特征值与特征向量
+----------------------
+
+矩阵 A 的谱分解为 A=UΛU',其中 Λ 是由 A 的特征值组成的对角矩阵，U 的列为 A 的特征值对应的特征向量，在 R 中可以用函数 eigen()函数得到 U 和 Λ。
+
+```{r}
+args(eigen)
+```
+
+其中：x 为矩阵，symmetric 项指定矩阵 x 是否为对称矩阵，若不指定，系统将自动检测 x 是否为对称矩阵。
+
+```{r}
+A=diag(4)+1 
+A
+A.eigen=eigen(A,symmetric=T)
+A.eigen #$vectors为特征值，$values为特征向量
+A.eigen$vectors%*%diag(A.eigen$values)%*%t(A.eigen$vectors)
+t(A.eigen$vectors)%*%A.eigen$vectors
+```
+
+矩阵的维数
+----------
+
+函数dim()将返回一个矩阵的维数，nrow()返回行数，ncol()返回列数
+
+```{r}
+A=matrix(1:12,3,4)
+A
+nrow(A) #行数
+ncol(A) #列数
+dim(A) #w维数
+```
+
+矩阵的行和、列和、行平均与列平均
+--------------------------------
+
+```{r}
+A
+rowSums(A) #行和
+rowMeans(A) #列和
+colSums(A) #行平均
+colMeans(A) #列平均
+```
+
+取矩阵的上、下三角部分
+----------------------
+
+函数lower.tri()和函数upper.tri()可以很方便的取到一个矩阵的上、下三角部分的元素
+
+```{r}
+args(lower.tri) #函数将返回一个逻辑值矩阵，其中下三角部分为真，上三角部分为假，选项diag为真时包含对角元素，为假时不包含对角元素。upper.tri()的效果与之孑然相反。
+A
+lower.tri(A)
+lower.tri(A,diag=T)
+A[lower.tri(A)]=0 #上三角元素
+A
+A=matrix(1:12,3,4)
+upper.tri(A)
+upper.tri(A,diag=T)
+A[upper.tri(A)]=0  #下三角元素
+A
+```
+
+行列式的值
+----------
+
+在R中，函数det(x)将计算方阵x的行列式的值
+
+```{r}
+x=matrix(rnorm(16),4,4)
+x
+det(x)
+```

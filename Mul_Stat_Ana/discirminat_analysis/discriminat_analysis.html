@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>多元统计判别分析R语言应用——判别分析</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+</head>
+
+<body>
+<h1>多元统计判别分析R语言应用——判别分析</h1>
+
+<h2>Fisher线性判别</h2>
+
+<p>例题</p>
+
+<blockquote>
+<p>某银行从历史贷款客户中随机抽取16个样本，根据设计的指标体系分别计算他们的“商业信用支持度”(\( x1 \))和“市场竞争地位体系”(\( x2 \)),类别变量\( G \)中,1代表贷款成功，2代表贷款失败。</p>
+
+<ol>
+<li>建立Fisher线性判别模型</li>
+<li>根据建立的模型，判别是否支持某客户(\( x1 = 131, x2 = -2 \))提供贷款。</li>
+</ol>
+</blockquote>
+
+<p>数据如图<img src="data:image/png;base64,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" alt="e6.1"/></p>
+
+<p>计算如下：</p>
+
+<pre><code class="r">e6.1 = read.table(&quot;e6.1.txt&quot;, header = T)  #导入数据
+attach(e6.1)
+</code></pre>
+
+<p>标出两个变量与贷款成功与否的关系图：</p>
+
+<pre><code class="r">plot(x1, x2)
+text(x1, x2, G, adj = -0.4)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-2"/> </p>
+
+<p>建立模型：</p>
+
+<pre><code class="r">library(MASS)
+(ld = lda(G ~ x1 + x2))  #建立Fisher线性判别模型
+</code></pre>
+
+<pre><code>## Call:
+## lda(G ~ x1 + x2)
+## 
+## Prior probabilities of groups:
+##   1   2 
+## 0.5 0.5 
+## 
+## Group means:
+##      x1     x2
+## 1 18.75  0.875
+## 2 94.50 -1.250
+## 
+## Coefficients of linear discriminants:
+##          LD1
+## x1  0.002395
+## x2 -1.099751
+</code></pre>
+
+<pre><code class="r">Z = predict(ld)  #对自身进行判别
+cbind(G, Z$x, Z$class)  #查看判别情况
+</code></pre>
+
+<pre><code>##    G     LD1  
+## 1  1 -1.3458 1
+## 2  1 -1.3578 1
+## 3  1  0.7938 2
+## 4  1 -2.4719 1
+## 5  1 -2.5390 1
+## 6  1 -1.4464 1
+## 7  1 -0.2891 1
+## 8  1 -1.4176 1
+## 9  2  2.1571 2
+## 10 2  2.0972 2
+## 11 2  1.5963 2
+## 12 2  0.8873 2
+## 13 2  0.7675 2
+## 14 2 -0.3371 1
+## 15 2  0.7340 2
+## 16 2  2.1715 2
+</code></pre>
+
+<pre><code class="r">(tab = table(G, Z$class))  #查看错判情况
+</code></pre>
+
+<pre><code>##    
+## G   1 2
+##   1 7 1
+##   2 1 7
+</code></pre>
+
+<pre><code class="r">sum(diag(prop.table(tab)))  #判别符合率
+</code></pre>
+
+<pre><code>## [1] 0.875
+</code></pre>
+
+<p>对新提出的数据进行判别</p>
+
+<pre><code class="r">(Z1 = predict(ld, data.frame(x1 = 131, x2 = -2)))
+</code></pre>
+
+<pre><code>## $class
+## [1] 2
+## Levels: 1 2
+## 
+## $posterior
+##          1      2
+## 1 0.004199 0.9958
+## 
+## $x
+##     LD1
+## 1 2.171
+</code></pre>
+
+<p>我们可以从Z1的class中看出，这组数据被判别为G = 2， 也就意味着不应为这位客户贷款。</p>
+
+<h2>二次判别（异方差）</h2>
+
+<p>当协方差阵不相同时，距离判别函数为非线性形式，一般为二次函数。</p>
+
+<pre><code class="r">(qd = qda(G ~ x1 + x2))  #建立二次判别模型
+</code></pre>
+
+<pre><code>## Call:
+## qda(G ~ x1 + x2)
+## 
+## Prior probabilities of groups:
+##   1   2 
+## 0.5 0.5 
+## 
+## Group means:
+##      x1     x2
+## 1 18.75  0.875
+## 2 94.50 -1.250
+</code></pre>
+
+<pre><code class="r">Z = predict(qd)  #对自身进行判别
+cbind(G, Z$class)  #查看判别情况
+</code></pre>
+
+<pre><code>##       G  
+##  [1,] 1 1
+##  [2,] 1 1
+##  [3,] 1 1
+##  [4,] 1 1
+##  [5,] 1 1
+##  [6,] 1 1
+##  [7,] 1 1
+##  [8,] 1 1
+##  [9,] 2 2
+## [10,] 2 2
+## [11,] 2 2
+## [12,] 2 2
+## [13,] 2 2
+## [14,] 2 1
+## [15,] 2 2
+## [16,] 2 2
+</code></pre>
+
+<pre><code class="r">(tab = table(G, Z$class))  #查看错判情况
+</code></pre>
+
+<pre><code>##    
+## G   1 2
+##   1 8 0
+##   2 1 7
+</code></pre>
+
+<pre><code class="r">sum(diag(prop.table(tab)))  #计算符合率
+</code></pre>
+
+<pre><code>## [1] 0.9375
+</code></pre>
+
+<p>我们可以从错判情况看出二次判别比一次判别错判要少，从符合率上看，二次判别的符合率更高，效果好于一次判别的效果。</p>
+
+<p>对数据进行判别：</p>
+
+<pre><code class="r">(Z1 = predict(qd, data.frame(x1 = 131, x2 = -2)))
+</code></pre>
+
+<pre><code>## $class
+## [1] 2
+## Levels: 1 2
+## 
+## $posterior
+##           1 2
+## 1 8.217e-13 1
+</code></pre>
+
+<p>结果与一次判别相同。</p>
+
+<h2>Bayes判别法</h2>
+
+<p>Bayes判别是一个体归属于某类的概率（或某类的判别函数值）最大或错判总平均损失最小为标准的。
+相关概念：先验概率q、后验概率。</p>
+
+<p>d6.3数据介绍：</p>
+
+<ol>
+<li>G表示销售状态：1.表示畅销；2.表示平销；3.表示滞销。</li>
+<li>Q表示质量评分</li>
+<li>C表示功能评分</li>
+<li>P表示销售价格</li>
+</ol>
+
+<h3>当<strong>先验概率相等</strong>时，取\( q1 = q2 = q3 = 1/3 \),此时判别函数等价于Fisher线性判别函数。</h3>
+
+<pre><code class="r">d6.3 = read.table(&quot;d6.3.txt&quot;, header = T)  #导入变量
+attach(d6.3)  #解析变量
+</code></pre>
+
+<pre><code>## 下列对象被屏蔽了from e6.1:
+## 
+##     G
+</code></pre>
+
+<pre><code class="r">(ld1 = lda(G ~ Q + C + P, prior = c(1, 1, 1)/3))  #建立模型
+</code></pre>
+
+<pre><code>## Call:
+## lda(G ~ Q + C + P, prior = c(1, 1, 1)/3)
+## 
+## Prior probabilities of groups:
+##      1      2      3 
+## 0.3333 0.3333 0.3333 
+## 
+## Group means:
+##       Q     C     P
+## 1 8.400 5.900 48.20
+## 2 7.713 7.250 69.88
+## 3 5.957 3.714 34.00
+## 
+## Coefficients of linear discriminants:
+##        LD1      LD2
+## Q -0.92307  0.76708
+## C -0.65223  0.11482
+## P  0.02743 -0.08484
+## 
+## Proportion of trace:
+##    LD1    LD2 
+## 0.7259 0.2741
+</code></pre>
+
+<pre><code class="r">Z1 = predict(ld1)  #对自身进行判别
+cbind(G, Z1$x, Z1$class)  #查看判别情况
+</code></pre>
+
+<pre><code>##    G      LD1      LD2  
+## 1  1 -0.40839  2.37788 1
+## 2  1 -2.40289  0.33403 1
+## 3  1 -0.50937  1.41417 1
+## 4  1 -0.95822  0.25030 1
+## 5  1 -1.78725  0.84260 1
+## 6  2 -2.54179  0.85631 1
+## 7  2  0.74904 -2.29239 2
+## 8  2 -2.39414 -0.96906 2
+## 9  2 -1.04572 -0.73175 2
+## 10 2 -1.34999 -2.76030 2
+## 11 2 -0.76438 -2.78518 2
+## 12 2  0.04715 -0.77130 2
+## 13 2  0.38367  0.11363 3
+## 14 3  2.77223  1.14753 3
+## 15 3  1.61977  0.07201 3
+## 16 3  0.84521 -0.26991 3
+## 17 3  3.10536 -0.11489 3
+## 18 3  2.30770  0.14824 3
+## 19 3  2.31337 -0.19415 3
+## 20 3  1.58059  0.07712 3
+</code></pre>
+
+<pre><code class="r">table(G, Z1$class)  #查看错判情况
+</code></pre>
+
+<pre><code>##    
+## G   1 2 3
+##   1 5 0 0
+##   2 1 6 1
+##   3 0 0 7
+</code></pre>
+
+<pre><code class="r">Z1$post  #后验概率
+</code></pre>
+
+<pre><code>##            1         2         3
+## 1  9.826e-01 0.0055570 1.186e-02
+## 2  7.942e-01 0.2056795 8.863e-05
+## 3  9.372e-01 0.0431044 1.969e-02
+## 4  6.537e-01 0.3371446 9.147e-03
+## 5  9.052e-01 0.0943611 4.798e-04
+## 6  9.278e-01 0.0721271 4.054e-05
+## 7  3.336e-03 0.8632226 1.334e-01
+## 8  1.775e-01 0.8224630 6.760e-05
+## 9  1.847e-01 0.8105204 4.783e-03
+## 10 2.847e-03 0.9969782 1.751e-04
+## 11 2.196e-03 0.9968539 9.497e-04
+## 12 1.112e-01 0.7798203 1.090e-01
+## 13 2.918e-01 0.3250330 3.832e-01
+## 14 7.594e-04 0.0001978 9.990e-01
+## 15 1.210e-02 0.0227472 9.652e-01
+## 16 7.941e-02 0.2426609 6.779e-01
+## 17 7.945e-05 0.0003790 9.995e-01
+## 18 1.392e-03 0.0028100 9.958e-01
+## 19 9.960e-04 0.0042953 9.947e-01
+## 20 1.377e-02 0.0252494 9.610e-01
+</code></pre>
+
+<h3>当<strong>先验概率不相等</strong>时，取\( q1 = 5/20, q2 = 8/20, q3 = 7/20 \)，求解Bayes判别函数的系数，并进行自身判别。</h3>
+
+<pre><code class="r">(ld2 = lda(G ~ Q + C + P, prior = c(5, 8, 7)/20))  #建立模型
+</code></pre>
+
+<pre><code>## Call:
+## lda(G ~ Q + C + P, prior = c(5, 8, 7)/20)
+## 
+## Prior probabilities of groups:
+##    1    2    3 
+## 0.25 0.40 0.35 
+## 
+## Group means:
+##       Q     C     P
+## 1 8.400 5.900 48.20
+## 2 7.713 7.250 69.88
+## 3 5.957 3.714 34.00
+## 
+## Coefficients of linear discriminants:
+##        LD1      LD2
+## Q -0.81173  0.88406
+## C -0.63091  0.20135
+## P  0.01579 -0.08776
+## 
+## Proportion of trace:
+##    LD1    LD2 
+## 0.7403 0.2597
+</code></pre>
+
+<pre><code class="r">Z2 = predict(ld2)  #对自身进行判别
+cbind(G, Z2$x, Z2$class)  #查看判别情况
+</code></pre>
+
+<pre><code>##    G     LD1       LD2  
+## 1  1 -0.1410  2.582952 1
+## 2  1 -2.3918  0.825366 1
+## 3  1 -0.3704  1.641515 1
+## 4  1 -0.9715  0.548448 1
+## 5  1 -1.7135  1.246682 1
+## 6  2 -2.4594  1.361571 1
+## 7  2  0.3790 -2.200432 2
+## 8  2 -2.5581 -0.467096 2
+## 9  2 -1.1900 -0.412972 2
+## 10 2 -1.7639 -2.382302 2
+## 11 2 -1.1869 -2.485575 2
+## 12 2 -0.1124 -0.598884 2
+## 13 2  0.3399  0.232863 3
+## 14 3  2.8457  0.936723 3
+## 15 3  1.5592  0.025668 3
+## 16 3  0.7458 -0.209168 3
+## 17 3  3.0063 -0.358990 3
+## 18 3  2.2512  0.008852 3
+## 19 3  2.2108 -0.331207 3
+## 20 3  1.5211  0.035985 3
+</code></pre>
+
+<pre><code class="r">table(G, Z2$class)  #查看错判情况
+</code></pre>
+
+<pre><code>##    
+## G   1 2 3
+##   1 5 0 0
+##   2 1 6 1
+##   3 0 0 7
+</code></pre>
+
+<pre><code class="r">Z2$post  #后验概率
+</code></pre>
+
+<pre><code>##            1         2         3
+## 1  9.747e-01 0.0088199 1.647e-02
+## 2  7.070e-01 0.2929274 1.104e-04
+## 3  9.066e-01 0.0667162 2.666e-02
+## 4  5.421e-01 0.4473099 1.062e-02
+## 5  8.565e-01 0.1428620 6.356e-04
+## 6  8.893e-01 0.1106146 5.440e-05
+## 7  2.123e-03 0.8789839 1.189e-01
+## 8  1.188e-01 0.8811091 6.337e-05
+## 9  1.241e-01 0.8713953 4.500e-03
+## 10 1.781e-03 0.9980655 1.534e-04
+## 11 1.374e-03 0.9977942 8.318e-04
+## 12 7.359e-02 0.8254938 1.009e-01
+## 13 2.164e-01 0.3857093 3.979e-01
+## 14 5.425e-04 0.0002261 9.992e-01
+## 15 8.646e-03 0.0260023 9.654e-01
+## 16 5.605e-02 0.2740443 6.699e-01
+## 17 5.675e-05 0.0004331 9.995e-01
+## 18 9.944e-04 0.0032115 9.958e-01
+## 19 7.112e-04 0.0049073 9.944e-01
+## 20 9.841e-03 0.0288659 9.613e-01
+</code></pre>
+
+<p>这个例题中无论先验概率是否相等，最终判别结果未出现差异，但是后验概率还是存在差异的。</p>
+
+</body>
+
+</html>
+

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>多元统计分析R语言应用——因子分析</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>多元统计分析R语言应用——因子分析</h1>
+
+<p>因子分析是指研究从变量群中提取共性因子的统计技术。它是在主成分的基础上构筑若干意义较为明确的公因子，以它们为框架分解原变量，以此考察原变量间的联系和区别。因子分析就是从大量的数据中“由表及里”、“去粗取精”，寻找影响或支配变量的多变量统计方法。</p>
+
+<p>因子分析法的基本思想是将观测变量进行分类，将相关性较高，即联系比较紧密的分在同一类中，而不同类变量之间的相关性则较低，那么每一类变量实际上就代表了一个基本结构，即公共因子。对于所研究的问题，试图用最少个数的不可测的公共因子的线性函数与特殊因子之和来描述原来观测的每一分量。</p>
+
+<h3>例题</h3>
+
+<p>根据中国上市公司的资料，截止2003年底，水泥行业上市公司有14家，收集2003年中期各项指标数据如下：</p>
+
+<pre><code class="text">    x1  x2  x3  x4  x5  x6
+冀东水泥    33.8    34.75   0.67    59.77   15.49   16.35
+大同水泥    27.54   28.04   2.36    35.29   -20.96  -46.45
+四川双马    22.86   23.47   0.61    42.83   5.48    -49.22
+牡丹江   19.05   19.95   1   48.51   -12.32  -65.99
+西水股份    20.84   21.17   1.08    48.45   65.09   54.81
+狮头股份    28.14   28.84   2.51    24.52   -6.43   -15.94
+太行股份    30.45   31.13   1.02    46.14   6.57    -16.59
+海螺水泥    36.29   36.96   0.27    58.31   70.85   117.59
+尖峰集团    16.94   17.26   0.61    52.04   9.03    -94.05
+四川金顶    28.74   29.4    0.6 65.46   -33.97  -55.02
+祁连山   33.31   34.3    1.17    45.8    12.18   39.46
+华新水泥    25.08   26.12   0.64    69.35   22.38   -10.2
+福建水泥    34.51   35.44   0.38    61.61   23.91   -163.99
+天鹅股份    25.52   26.73   1.1 47.02   -4.51   -68.79
+</code></pre>
+
+<p>进行因子分析。</p>
+
+<h4>R语言计算函数</h4>
+
+<pre><code class="text">factanal(X, factors, scores = c(&quot;none&quot;, &quot;regression&quot;, &quot;Bartlett&quot;), rotation = &quot;varimax&quot;, ...) #因子分析函数
+X 为数值矩阵或数据框
+factors 为因子个数
+scores 为因子得分的计算方法，包括 &quot;regression&quot;, &quot;Bartlett&quot;
+rotation 为因子旋转方法
+</code></pre>
+
+<pre><code class="r">X = read.table(&quot;d9.1.txt&quot;, header = T)  #导入数据
+# 由于观测数据很多，不可避免出现多重共线性问题，需要先计算一下相关矩阵。
+cor(X)  #计算相关矩阵
+</code></pre>
+
+<pre><code>##          x1      x2       x3       x4      x5       x6
+## x1  1.00000  0.9992 -0.09975  0.18851  0.2010  0.29778
+## x2  0.99920  1.0000 -0.10420  0.19673  0.1904  0.28748
+## x3 -0.09975 -0.1042  1.00000 -0.83716 -0.4088  0.01519
+## x4  0.18851  0.1967 -0.83716  1.00000  0.2585 -0.02928
+## x5  0.20100  0.1904 -0.40876  0.25851  1.0000  0.58029
+## x6  0.29778  0.2875  0.01519 -0.02928  0.5803  1.00000
+</code></pre>
+
+<pre><code class="r">(FAC = factanal(X, 3, scores = &quot;regression&quot;, rotation = &quot;varimax&quot;))  #极大似然法进行因子分析,回归估计法计算因子得分
+</code></pre>
+
+<pre><code>## 
+## Call:
+## factanal(x = X, factors = 3, scores = &quot;regression&quot;, rotation = &quot;varimax&quot;)
+## 
+## Uniquenesses:
+##    x1    x2    x3    x4    x5    x6 
+## 0.005 0.005 0.005 0.271 0.005 0.548 
+## 
+## Loadings:
+##    Factor1 Factor2 Factor3
+## x1  0.983           0.155 
+## x2  0.985           0.142 
+## x3         -0.990  -0.124 
+## x4  0.127   0.844         
+## x5          0.293   0.953 
+## x6  0.210           0.631 
+## 
+##                Factor1 Factor2 Factor3
+## SS loadings      1.998   1.800   1.367
+## Proportion Var   0.333   0.300   0.228
+## Cumulative Var   0.333   0.633   0.861
+## 
+## The degrees of freedom for the model is 0 and the fit was 1.1422
+</code></pre>
+
+<pre><code class="r">FAC$scores  #因子得分
+</code></pre>
+
+<pre><code>##          Factor1  Factor2  Factor3
+## 冀东水泥  1.0571  0.49858 -0.01932
+## 大同水泥  0.2508 -1.97182 -0.55062
+## 四川双马 -0.7619  0.61936 -0.35643
+## 牡丹江   -1.2622  0.10831 -0.82490
+## 西水股份 -1.4124 -0.36520  2.09840
+## 狮头股份  0.2993 -2.28407  0.06540
+## 太行股份  0.5368 -0.01725 -0.16548
+## 海螺水泥  1.1383  0.86089  1.85549
+## 尖峰集团 -1.7990  0.62143 -0.20236
+## 四川金顶  0.4397  0.83905 -1.87521
+## 祁连山    1.0220 -0.27756  0.10237
+## 华新水泥 -0.4381  0.53317  0.26013
+## 福建水泥  1.1144  0.91988  0.13561
+## 天鹅股份 -0.1847 -0.08479 -0.52308
+</code></pre>
+
+<p>因子分析常有以下四个基本步骤：</p>
+
+<ol>
+<li>确认待分析的原变量是否适合作因子分析</li>
+<li>构造因子变量</li>
+<li>利用旋转方法使因子变量更具有可解释性</li>
+<li>计算因子变量得分</li>
+</ol>
+
+<p>信息重叠图用法：</p>
+
+<pre><code class="text">biplot(scores, loadings, ...)
+scores 为因子得分
+loadings 为因子载荷
+</code></pre>
+
+<p>例题中绘制信息重叠图：</p>
+
+<pre><code class="r">biplot(FAC$scores, FAC$loadings)  #前两个因子图
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAA7VBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZrU5AAA5ADk5AGU5OWU5OY85ZrU5j9plAABlADllAGVlOQBltf2POQCPOTmPOWWPtY+P27WP29qP2/21ZgC124+1/v3ajzna24/a/v39eyD9jzn9tWX923v924/9/rX9/tr9/v3+AAD+ABf+ADn+AGX+KBf+MQD+OQD+OTn+OWX+OY/+WAD+ZgD+Zlf+ZmX+jzn+nI/+tY/+tf3+29r+2/3+/rX+/v3/AAD/ABf/ADn/AEj/AFf/AGX/FwD/Fyj/KI//MY//OWX/OY//WLX/ZrX/e9r/j9pLOQH1AAAAT3RSTlP/////////////////////////////////////////////////////AP//////////////////////////////////////////////////54QPOAAAAAlwSFlzAAALEgAACxIB0t1+/AAAFcFJREFUeJztnYtj3DYdx1EYS1e6diNtYQkNpYfvtK2wAeFVuh1l41VK//8/h5MfetiWT5Jlydbv+2mTSy6WJd/HetmW9AMOSPKD3AkAeYB4okA8USCeKBBPFIgnCsQTBeKJAvFEgXiiQDxRIJ4oEE8UiCcKxBMF4okC8USBeKJAPFEgnigQTxSIJwrEEwXiiQLxRIF4okA8USCeKBBPFIgnCsQTBeKJsoz46h5jV/VP+0fsw+d+Ye8/q19vGWM/fBYS0jdOtb1fnCqc91GGRikIPUyTRcTvP7nm1UfXp58Oj6/47aVP2F33MdxcecbahfSNU9veK04VzvsoQ6MUhB5mj0XE70R66iPaf/pMnqFO3Fz8tNn88OTaL1IZ0jdOtb1fnCqc91GGRslnHGaPxep4ketPxdKD5+1PzrQHcyrIuurCM6RvnGp7vzhVOO+jDI2yCRx2mD2WEn94/FC87D4MFS+qCs/s0Ib0jVNt7xenCud9lKFR1gQeZo/o4m8YuxQncu3d67RsQhrFl2MFaIb0jbO3vXOlGyXH+0XZBF5xjq/utYcSUBEFiDdDhtfxfnFGqeP9oqwJPMwei4iX3usS37PpqZVkh6chp4xvnGp7vzhVOO+jDI2yJvAweywiXvRNT00WkcKwfrz4Ou3kwq8g60KG9eP9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" alt="plot of chunk unnamed-chunk-2"/> </p>
+
+</body>
+
+</html>
+
